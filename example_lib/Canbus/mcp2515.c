@@ -330,11 +330,28 @@ uint8_t mcp2515_send_message(tCAN *message)
 	RESET(MCP2515_CS);
 	spi_putc(SPI_WRITE_TX | address);
 
-	spi_putc(message->id >> 3);
-	spi_putc(message->id << 5);
+	// 29 bit CAN id
+	uint8_t byte = 0;
 
-	spi_putc(0);
-	spi_putc(0);
+	// standard id
+	byte = (uint8_t)(message->id >> 21);
+	spi_putc(byte);
+
+	// standard id
+	byte = ((uint8_t)(message->id >> 13)) & 0b11100000;
+	// EXIDE
+	byte |= 0b00001000;
+	// extended id
+	byte |= ((uint8_t)(message->id >> 16)) & 0b00000011;
+	spi_putc(byte);
+
+	// extended id
+	byte = (uint8_t)(message->id >> 8);
+	spi_putc(byte);
+
+	// extended id
+	byte = (uint8_t)(message->id);
+	spi_putc(byte);
 
 	uint8_t length = message->header.length & 0x0f;
 
