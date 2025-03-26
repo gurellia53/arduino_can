@@ -3,28 +3,18 @@
 #include <global.h>
 #include <mcp2515.h>
 #include <mcp2515_defs.h>
-#include <SPI.h>
-#include <SD.h>
 #include "FRCCAN.h"
-const int chipSelect = 9;
+
 void setup()
 {
-  Serial.begin(9600); // For debug use
-  pinMode(chipSelect, OUTPUT);
+  Serial.begin(9600);
   Serial.println("CAN Read - Testing receival of CAN Bus message");
-  delay(1000);
+  delay(500);
   if (Canbus.init(CANSPEED_1000)) // Initialise MCP2515 CAN controller at the specified speed
     Serial.println("CAN Init ok");
   else
     Serial.println("Can't init CAN");
-  delay(1000);
-  if (!SD.begin(chipSelect))
-  {
-    Serial.println("Card failed, or not present");
-    // don't do anything more:
-    return;
-  }
-  Serial.println("card initialized.");
+  delay(500);
 }
 void loop()
 {
